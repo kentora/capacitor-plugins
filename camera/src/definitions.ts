@@ -64,6 +64,17 @@ export interface CameraPlugin {
 
 export interface ImageOptions {
   /**
+   * Whether to include the exif data in the response, when choosing from gallery.
+   *
+   * If set to `true`, the `photos` permission is required, when choosing from gallery.
+   *
+   * Only available on iOS.
+   *
+   * @default true
+   * @since 4.x.0
+   */
+  exif?: boolean;
+  /**
    * The quality of image to return as JPEG, from 0-100
    *
    * @since 1.0.0

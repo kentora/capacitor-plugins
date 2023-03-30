@@ -249,6 +249,7 @@ extension CameraPlugin: PHPickerViewControllerDelegate {
             self.call?.reject("User cancelled photos app")
             return
         }
+        let exif = self.call?.getBool("exif") ?? true
         if multiple {
             var images: [ProcessedImage] = []
             var processedCount = 0
@@ -261,8 +262,10 @@ extension CameraPlugin: PHPickerViewControllerDelegate {
                 img.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] (reading, _) in
                     if let image = reading as? UIImage {
                         var asset: PHAsset?
-                        if let assetId = img.assetIdentifier {
-                            asset = PHAsset.fetchAssets(withLocalIdentifiers: [assetId], options: nil).firstObject
+                        if exif {
+                            if let assetId = img.assetIdentifier {
+                                asset = PHAsset.fetchAssets(withLocalIdentifiers: [assetId], options: nil).firstObject
+                            }
                         }
                         if let processedImage = self?.processedImage(from: image, with: asset?.imageData) {
                             images.append(processedImage)
@@ -286,8 +289,10 @@ extension CameraPlugin: PHPickerViewControllerDelegate {
             result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] (reading, _) in
                 if let image = reading as? UIImage {
                     var asset: PHAsset?
-                    if let assetId = result.assetIdentifier {
-                        asset = PHAsset.fetchAssets(withLocalIdentifiers: [assetId], options: nil).firstObject
+                    if exif {
+                        if let assetId = result.assetIdentifier {
+                            asset = PHAsset.fetchAssets(withLocalIdentifiers: [assetId], options: nil).firstObject
+                        }
                     }
                     if var processedImage = self?.processedImage(from: image, with: asset?.imageData) {
                         processedImage.flags = .gallery
